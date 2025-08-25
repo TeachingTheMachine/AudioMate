@@ -4,11 +4,39 @@ import { storage } from "./storage";
 import { insertTtsTestSchema, type TtsApiProvider } from "@shared/schema";
 import { z } from "zod";
 
+// Request counting
+let requestCounts = {
+  openai: 0,
+  total: 0,
+  lastReset: Date.now()
+};
+
+const resetCountsIfNeeded = () => {
+  const hourAgo = Date.now() - (60 * 60 * 1000);
+  if (requestCounts.lastReset < hourAgo) {
+    console.log(`[TTS] Resetting request counts. Previous hour: OpenAI=${requestCounts.openai}, Total=${requestCounts.total}`);
+    requestCounts = { openai: 0, total: 0, lastReset: Date.now() };
+  }
+};
+
 // TTS API clients
 const ttsClients = {
   async openai(text: string, voiceSettings: any) {
+    resetCountsIfNeeded();
+    requestCounts.openai++;
+    requestCounts.total++;
+    
+    console.log(`[TTS] OpenAI request #${requestCounts.openai} (Total: ${requestCounts.total})`);
+    
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) throw new Error("OpenAI API key not configured");
+
+    console.log(`[TTS] Making OpenAI API call with:`, {
+      model: "tts-1",
+      voice: voiceSettings.voice || "alloy",
+      speed: voiceSettings.speed || 1.0,
+      textLength: text.length
+    });
 
     const response = await fetch("https://api.openai.com/v1/audio/speech", {
       method: "POST",
@@ -24,11 +52,23 @@ const ttsClients = {
       }),
     });
 
+    console.log(`[TTS] OpenAI response status: ${response.status} ${response.statusText}`);
+    
     if (!response.ok) {
-      throw new Error(`OpenAI TTS failed: ${response.statusText}`);
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('retry-after');
+        console.log(`[TTS] Rate limited! Retry after: ${retryAfter} seconds`);
+        throw new Error(`OpenAI rate limit exceeded. Please wait ${retryAfter || '60'} seconds before trying again.`);
+      }
+      
+      const errorText = await response.text();
+      console.log(`[TTS] OpenAI error response:`, errorText);
+      throw new Error(`OpenAI TTS failed: ${response.statusText} - ${errorText}`);
     }
 
-    return response.arrayBuffer();
+    const arrayBuffer = await response.arrayBuffer();
+    console.log(`[TTS] OpenAI returned audio buffer of ${arrayBuffer.byteLength} bytes`);
+    return arrayBuffer;
   },
 
   async grok(text: string, voiceSettings: any) {
@@ -92,9 +132,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get recent TTS tests
   app.get("/api/tts-tests", async (req, res) => {
     try {
+      console.log(`[API] GET /api/tts-tests - Request count this hour: ${requestCounts.total}`);
       const tests = await storage.getRecentTtsTests(10);
       res.json(tests);
     } catch (error) {
+      console.log(`[API] Error fetching tests:`, error);
       res.status(500).json({ message: "Failed to fetch TTS tests" });
     }
   });

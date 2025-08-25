@@ -7,7 +7,7 @@ import type { TtsTest } from "@shared/schema";
 export function RecentTests() {
   const { data: tests, isLoading } = useQuery<TtsTest[]>({
     queryKey: ["/api/tts-tests"],
-    refetchInterval: 5000, // Refresh every 5 seconds
+    refetchInterval: 30000, // Refresh every 30 seconds (reduced from 5 seconds)
   });
 
   const formatTimeAgo = (date: Date) => {
