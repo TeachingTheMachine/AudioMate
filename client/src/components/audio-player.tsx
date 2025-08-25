@@ -92,35 +92,56 @@ export function AudioPlayer({ test }: AudioPlayerProps) {
   if (test.status === "failed") {
     return (
       <Card className="bg-white rounded-xl shadow-lg border border-red-200">
+        <CardHeader className="px-6 py-4 bg-red-50 border-b border-red-200">
+          <CardTitle className="text-lg font-semibold text-red-800 flex items-center">
+            <XCircle className="w-5 h-5 mr-2" />
+            Generation Failed
+          </CardTitle>
+        </CardHeader>
         <CardContent className="p-6">
-          <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0">
-              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                <XCircle className="w-5 h-5 text-red-600" />
-              </div>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold text-red-800 mb-2">Generation Failed</h3>
-              <p className="text-red-700 mb-4" data-testid="text-error-message">
+          <div className="space-y-4">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <h4 className="font-medium text-red-800 mb-2">Error Details:</h4>
+              <p className="text-red-700 text-sm font-mono bg-red-100 p-2 rounded" data-testid="text-error-message">
                 {test.errorMessage || "An unknown error occurred during audio generation."}
               </p>
-              <div className="flex space-x-3">
-                <Button 
-                  size="sm" 
-                  className="bg-red-600 hover:bg-red-700 text-white"
-                  data-testid="button-retry"
-                >
-                  Retry
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="border-red-300 text-red-700 hover:bg-red-50"
-                  data-testid="button-check-settings"
-                >
-                  Check Settings
-                </Button>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="font-medium text-gray-600">API Provider:</span>
+                <p className="text-gray-800" data-testid="text-failed-api">{test.apiProvider}</p>
               </div>
+              <div>
+                <span className="font-medium text-gray-600">Generation Time:</span>
+                <p className="text-gray-800">{test.generationTime}ms</p>
+              </div>
+            </div>
+
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+              <p className="text-yellow-800 text-sm">
+                <Info className="inline w-4 h-4 mr-1" />
+                Make sure you have valid API credentials configured for {test.apiProvider}. 
+                Check the browser console for more detailed error information.
+              </p>
+            </div>
+            
+            <div className="flex space-x-3">
+              <Button 
+                size="sm" 
+                className="bg-red-600 hover:bg-red-700 text-white"
+                data-testid="button-retry"
+              >
+                Retry Generation
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="border-red-300 text-red-700 hover:bg-red-50"
+                data-testid="button-check-settings"
+              >
+                Check API Settings
+              </Button>
             </div>
           </div>
         </CardContent>

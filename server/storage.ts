@@ -47,6 +47,7 @@ export class MemStorage implements IStorage {
     const test: TtsTest = {
       ...insertTest,
       id,
+      voiceSettings: insertTest.voiceSettings || {},
       audioUrl: null,
       status: "pending",
       errorMessage: null,

@@ -63,10 +63,14 @@ export function TtsForm() {
 
   const generateAudioMutation = useMutation({
     mutationFn: async (testId: string) => {
+      console.log(`[Frontend] Starting audio generation for test: ${testId}`);
       const response = await apiRequest("POST", `/api/tts-tests/${testId}/generate`);
-      return response.json();
+      const data = await response.json();
+      console.log(`[Frontend] Generation response:`, data);
+      return data;
     },
     onSuccess: (data: TtsTest) => {
+      console.log(`[Frontend] Generation success:`, data);
       setCurrentTest(data);
       queryClient.invalidateQueries({ queryKey: ["/api/tts-tests"] });
       
@@ -76,6 +80,7 @@ export function TtsForm() {
           description: `Audio generated successfully in ${data.generationTime}ms`,
         });
       } else {
+        console.log(`[Frontend] Generation failed with error:`, data.errorMessage);
         toast({
           title: "Generation Failed",
           description: data.errorMessage || "Unknown error occurred",
@@ -83,10 +88,11 @@ export function TtsForm() {
         });
       }
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error("[Frontend] Generation error:", error);
       toast({
         title: "Error",
-        description: "Failed to generate audio",
+        description: `Failed to generate audio: ${error?.message || 'Unknown error'}`,
         variant: "destructive",
       });
     },
@@ -112,13 +118,20 @@ export function TtsForm() {
         },
       };
 
+      console.log(`[Frontend] Creating test with data:`, testData);
       const test = await createTestMutation.mutateAsync(testData);
+      console.log(`[Frontend] Test created:`, test);
       setCurrentTest(test);
       
       // Start audio generation
       await generateAudioMutation.mutateAsync(test.id);
     } catch (error) {
-      console.error("Generation failed:", error);
+      console.error("[Frontend] Generation failed:", error);
+      toast({
+        title: "Generation Error", 
+        description: `Complete error: ${error instanceof Error ? error.message : JSON.stringify(error)}`,
+        variant: "destructive",
+      });
     }
   };
 

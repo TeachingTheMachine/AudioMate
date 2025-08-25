@@ -118,11 +118,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/tts-tests/:id/generate", async (req, res) => {
     try {
       const { id } = req.params;
+      console.log(`[TTS] Starting generation for test ID: ${id}`);
+      
       const test = await storage.getTtsTest(id);
       
       if (!test) {
+        console.log(`[TTS] Test not found: ${id}`);
         return res.status(404).json({ message: "TTS test not found" });
       }
+
+      console.log(`[TTS] Test details:`, {
+        id: test.id,
+        text: test.text.substring(0, 50) + '...',
+        apiProvider: test.apiProvider,
+        voiceSettings: test.voiceSettings
+      });
 
       const startTime = Date.now();
       
@@ -130,12 +140,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const apiProvider = test.apiProvider as TtsApiProvider;
         const ttsClient = ttsClients[apiProvider];
         
+        console.log(`[TTS] Using API provider: ${apiProvider}`);
+        
         if (!ttsClient) {
+          console.log(`[TTS] ERROR: Unsupported TTS provider: ${apiProvider}`);
           throw new Error(`Unsupported TTS provider: ${apiProvider}`);
         }
 
+        console.log(`[TTS] Calling TTS client for ${apiProvider}...`);
         const audioBuffer = await ttsClient(test.text, test.voiceSettings || {});
         const generationTime = Date.now() - startTime;
+        
+        console.log(`[TTS] Audio generated successfully in ${generationTime}ms, size: ${audioBuffer.byteLength} bytes`);
         
         // In a real app, you'd save this to a file storage service
         // For now, we'll create a data URL
@@ -150,22 +166,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
           errorMessage: null,
         });
 
+        console.log(`[TTS] Test updated with success status`);
         const updatedTest = await storage.getTtsTest(id);
         res.json(updatedTest);
         
       } catch (error) {
         const generationTime = Date.now() - startTime;
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        
+        console.log(`[TTS] ERROR during generation:`, {
+          error: errorMessage,
+          stack: error instanceof Error ? error.stack : 'No stack trace',
+          generationTime,
+          apiProvider: test.apiProvider
+        });
         
         await storage.updateTtsTest(id, {
           status: "failed",
-          errorMessage: error instanceof Error ? error.message : "Unknown error",
+          errorMessage,
           generationTime,
         });
 
         const updatedTest = await storage.getTtsTest(id);
+        console.log(`[TTS] Updated test with failed status:`, {
+          id: updatedTest?.id,
+          status: updatedTest?.status,
+          errorMessage: updatedTest?.errorMessage
+        });
         res.status(500).json(updatedTest);
       }
     } catch (error) {
+      console.log(`[TTS] OUTER ERROR:`, {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : 'No stack trace'
+      });
       res.status(500).json({ message: "Failed to generate TTS audio" });
     }
   });
