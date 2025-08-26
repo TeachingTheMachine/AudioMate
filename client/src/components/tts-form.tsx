@@ -13,12 +13,6 @@ import type { TtsTest, InsertTtsTest } from "@shared/schema";
 
 const API_PROVIDERS = [
   { value: "openai", label: "OpenAI TTS" },
-  { value: "grok", label: "Grok TTS" },
-  { value: "groc", label: "Groc TTS" },
-  { value: "azure", label: "Azure Cognitive Services" },
-  { value: "google", label: "Google Cloud TTS" },
-  { value: "aws", label: "Amazon Polly" },
-  { value: "elevenlabs", label: "ElevenLabs" },
 ];
 
 const VOICE_OPTIONS = [
@@ -38,7 +32,7 @@ const SPEED_OPTIONS = [
 
 export function TtsForm() {
   const [text, setText] = useState("");
-  const [apiProvider, setApiProvider] = useState("");
+  const [apiProvider, setApiProvider] = useState("openai");
   const [voice, setVoice] = useState("alloy");
   const [speed, setSpeed] = useState("1.0");
   const [advancedOpen, setAdvancedOpen] = useState(false);
@@ -137,7 +131,7 @@ export function TtsForm() {
 
   const handleClear = () => {
     setText("");
-    setApiProvider("");
+    setApiProvider("openai");
     setVoice("alloy");
     setSpeed("1.0");
     setCurrentTest(null);
@@ -186,7 +180,7 @@ export function TtsForm() {
             </label>
             <Select value={apiProvider} onValueChange={setApiProvider}>
               <SelectTrigger data-testid="select-api" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200">
-                <SelectValue placeholder="Select an API provider..." />
+                <SelectValue placeholder="OpenAI TTS" />
               </SelectTrigger>
               <SelectContent>
                 {API_PROVIDERS.map((provider) => (
