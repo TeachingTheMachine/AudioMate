@@ -2,7 +2,7 @@ import { Header } from "@/components/header";
 import { TtsForm } from "@/components/tts-form";
 import { RecentTests } from "@/components/recent-tests";
 import { Footer } from "@/components/footer";
-import designElementsImage from '../assets/TTS_app_design_elements_7f4c4c40.png';
+import designElementsImage from '../assets/images.png';
 
 export default function Home() {
   return (
