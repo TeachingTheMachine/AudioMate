@@ -2,9 +2,9 @@ import { Shield } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-200 mt-12">
+    <footer className="bg-card/80 backdrop-blur-sm border-t border-border mt-12">
       <div className="max-w-4xl mx-auto px-4 py-6">
-        <div className="flex items-center justify-between text-sm text-gray-600">
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
           <div className="flex items-center space-x-4">
             <span>© 2024 TTS Testing Tool</span>
             <a 

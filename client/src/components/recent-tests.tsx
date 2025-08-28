@@ -62,10 +62,10 @@ export function RecentTests() {
   const recentTests = tests || [];
 
   return (
-    <Card className="bg-white rounded-xl shadow-lg border border-gray-200 mt-6">
-      <CardHeader className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-        <CardTitle className="text-lg font-semibold text-gray-900">Recent Tests</CardTitle>
-        <p className="text-sm text-gray-600 mt-1">Your recent TTS generations</p>
+    <Card className="bg-card/95 backdrop-blur-sm rounded-xl shadow-lg border border-border mt-6">
+      <CardHeader className="px-6 py-4 bg-secondary/30 border-b border-border">
+        <CardTitle className="text-lg font-semibold text-foreground">Recent Tests</CardTitle>
+        <p className="text-sm text-muted-foreground mt-1">Your recent TTS generations</p>
       </CardHeader>
       
       <div className="divide-y divide-gray-200">
