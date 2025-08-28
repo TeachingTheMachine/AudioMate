@@ -107,6 +107,12 @@ export function RecentTests() {
                       {test.status === "pending" && <Clock className="inline w-3 h-3 mr-1" />}
                       {test.status.charAt(0).toUpperCase() + test.status.slice(1)}
                     </span>
+                    {test.tokensUsed && (
+                      <span className="text-xs text-muted-foreground flex items-center">
+                        <span className="w-3 h-3 text-center font-mono text-[10px] bg-primary/20 text-primary rounded mr-1">T</span>
+                        {test.tokensUsed} tokens
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">

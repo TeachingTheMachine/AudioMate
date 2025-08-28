@@ -243,6 +243,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         console.log(`[TTS] Audio generated successfully in ${generationTime}ms, size: ${audioBuffer.byteLength} bytes`);
         
+        // Calculate approximate tokens used (rough estimate: 1 token per 4 characters for text)
+        const estimatedTokens = Math.ceil(test.text.length / 4);
+        
         // In a real app, you'd save this to a file storage service
         // For now, we'll create a data URL
         const audioBase64 = Buffer.from(audioBuffer).toString('base64');
@@ -253,6 +256,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           audioUrl,
           generationTime,
           audioSize: audioBuffer.byteLength,
+          tokensUsed: estimatedTokens,
           errorMessage: null,
         });
 

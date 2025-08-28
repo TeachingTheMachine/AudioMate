@@ -19,6 +19,7 @@ export const ttsTests = pgTable("tts_tests", {
   errorMessage: text("error_message"),
   generationTime: integer("generation_time"), // in milliseconds
   audioSize: integer("audio_size"), // in bytes
+  tokensUsed: integer("tokens_used"), // tokens consumed for this request
   createdAt: timestamp("created_at").default(sql`now()`).notNull(),
 });
 

@@ -1,5 +1,6 @@
-import { type User, type InsertUser, type TtsTest, type InsertTtsTest } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { users, ttsTests, type User, type InsertUser, type TtsTest, type InsertTtsTest } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -12,68 +13,55 @@ export interface IStorage {
   getRecentTtsTests(limit?: number): Promise<TtsTest[]>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-  private ttsTests: Map<string, TtsTest>;
-
-  constructor() {
-    this.users = new Map();
-    this.ttsTests = new Map();
-  }
-
+export class DatabaseStorage implements IStorage {
   async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
     return user;
   }
 
   async getTtsTest(id: string): Promise<TtsTest | undefined> {
-    return this.ttsTests.get(id);
+    const [test] = await db.select().from(ttsTests).where(eq(ttsTests.id, id));
+    return test || undefined;
   }
 
   async createTtsTest(insertTest: InsertTtsTest): Promise<TtsTest> {
-    const id = randomUUID();
-    const test: TtsTest = {
-      ...insertTest,
-      id,
-      voiceSettings: insertTest.voiceSettings || {},
-      audioUrl: null,
-      status: "pending",
-      errorMessage: null,
-      generationTime: null,
-      audioSize: null,
-      createdAt: new Date(),
-    };
-    this.ttsTests.set(id, test);
+    const [test] = await db
+      .insert(ttsTests)
+      .values(insertTest)
+      .returning();
     return test;
   }
 
   async updateTtsTest(id: string, updates: Partial<TtsTest>): Promise<TtsTest | undefined> {
-    const existing = this.ttsTests.get(id);
-    if (!existing) return undefined;
-    
-    const updated = { ...existing, ...updates };
-    this.ttsTests.set(id, updated);
-    return updated;
+    const [updated] = await db
+      .update(ttsTests)
+      .set(updates)
+      .where(eq(ttsTests.id, id))
+      .returning();
+    return updated || undefined;
   }
 
   async getRecentTtsTests(limit: number = 10): Promise<TtsTest[]> {
-    const tests = Array.from(this.ttsTests.values())
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .slice(0, limit);
+    const tests = await db
+      .select()
+      .from(ttsTests)
+      .orderBy(desc(ttsTests.createdAt))
+      .limit(limit);
     return tests;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
