@@ -2,17 +2,19 @@ import { Header } from "@/components/header";
 import { TtsForm } from "@/components/tts-form";
 import { RecentTests } from "@/components/recent-tests";
 import { Footer } from "@/components/footer";
+import designElementsImage from '../assets/TTS_app_design_elements_7f4c4c40.png';
 
 export default function Home() {
   return (
-    <div className="bg-background min-h-screen font-inter relative overflow-hidden">
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-25">
-        <div className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-br from-primary/30 to-transparent rounded-full blur-xl"></div>
-        <div className="absolute top-60 right-20 w-56 h-56 bg-gradient-to-bl from-secondary/40 to-transparent rounded-full blur-2xl"></div>
-        <div className="absolute bottom-40 left-1/4 w-48 h-48 bg-gradient-to-tr from-accent/35 to-transparent rounded-full blur-xl"></div>
-        <div className="absolute top-1/3 right-1/3 w-32 h-32 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-full blur-lg"></div>
-      </div>
+    <div className="min-h-screen font-inter relative overflow-hidden">
+      {/* Full page background image */}
+      <div 
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-15"
+        style={{ backgroundImage: `url(${designElementsImage})` }}
+      ></div>
+      
+      {/* Background color overlay */}
+      <div className="fixed inset-0 bg-background/85"></div>
       
       <Header />
       <main className="max-w-4xl mx-auto px-4 py-8 relative z-10">

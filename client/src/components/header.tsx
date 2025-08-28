@@ -1,16 +1,9 @@
 import { Volume2, Radio } from "lucide-react";
-import designElementsImage from '../assets/TTS_app_design_elements_7f4c4c40.png';
 
 export function Header() {
   return (
-    <header className="bg-card/80 backdrop-blur-sm shadow-sm border-b border-border relative overflow-hidden">
-      {/* Background graphic */}
-      <div 
-        className="absolute right-0 top-0 h-full w-80 opacity-30 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${designElementsImage})` }}
-      ></div>
-      
-      <div className="max-w-4xl mx-auto px-4 py-6 relative z-10">
+    <header className="bg-card/80 backdrop-blur-sm shadow-sm border-b border-border relative">
+      <div className="max-w-4xl mx-auto px-4 py-6">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-3">
             <div className="p-3 bg-gradient-to-br from-primary to-primary/80 rounded-xl shadow-md">
