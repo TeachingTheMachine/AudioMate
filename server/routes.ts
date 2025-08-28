@@ -7,6 +7,7 @@ import { z } from "zod";
 // Request counting
 let requestCounts = {
   openai: 0,
+  elevenlabs: 0,
   total: 0,
   lastReset: Date.now()
 };
@@ -14,8 +15,8 @@ let requestCounts = {
 const resetCountsIfNeeded = () => {
   const hourAgo = Date.now() - (60 * 60 * 1000);
   if (requestCounts.lastReset < hourAgo) {
-    console.log(`[TTS] Resetting request counts. Previous hour: OpenAI=${requestCounts.openai}, Total=${requestCounts.total}`);
-    requestCounts = { openai: 0, total: 0, lastReset: Date.now() };
+    console.log(`[TTS] Resetting request counts. Previous hour: OpenAI=${requestCounts.openai}, ElevenLabs=${requestCounts.elevenlabs}, Total=${requestCounts.total}`);
+    requestCounts = { openai: 0, elevenlabs: 0, total: 0, lastReset: Date.now() };
   }
 };
 
@@ -120,11 +121,58 @@ const ttsClients = {
   },
 
   async elevenlabs(text: string, voiceSettings: any) {
+    resetCountsIfNeeded();
+    requestCounts.elevenlabs++;
+    requestCounts.total++;
+    
+    console.log(`[TTS] ElevenLabs request #${requestCounts.elevenlabs} (Total: ${requestCounts.total})`);
+    
     const apiKey = process.env.ELEVENLABS_API_KEY;
     if (!apiKey) throw new Error("ElevenLabs API key not configured");
+
+    // Default voice ID (Rachel voice)
+    const voiceId = voiceSettings.voiceId || "21m00Tcm4TlvDq8ikWAM";
     
-    // Placeholder for ElevenLabs implementation
-    throw new Error("ElevenLabs TTS integration not yet implemented");
+    console.log(`[TTS] Making ElevenLabs API call with:`, {
+      voiceId,
+      textLength: text.length,
+      model: "eleven_monolingual_v1"
+    });
+
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+      method: "POST",
+      headers: {
+        "Accept": "audio/mpeg",
+        "Content-Type": "application/json",
+        "xi-api-key": apiKey,
+      },
+      body: JSON.stringify({
+        text: text,
+        model_id: "eleven_monolingual_v1",
+        voice_settings: {
+          stability: voiceSettings.stability || 0.5,
+          similarity_boost: voiceSettings.similarity_boost || 0.5,
+        }
+      }),
+    });
+
+    console.log(`[TTS] ElevenLabs response status: ${response.status} ${response.statusText}`);
+    
+    if (!response.ok) {
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('retry-after');
+        console.log(`[TTS] ElevenLabs rate limited! Retry after: ${retryAfter} seconds`);
+        throw new Error(`ElevenLabs rate limit exceeded. Please wait ${retryAfter || '60'} seconds before trying again.`);
+      }
+      
+      const errorText = await response.text();
+      console.log(`[TTS] ElevenLabs error response:`, errorText);
+      throw new Error(`ElevenLabs TTS failed: ${response.statusText} - ${errorText}`);
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    console.log(`[TTS] ElevenLabs returned audio buffer of ${arrayBuffer.byteLength} bytes`);
+    return arrayBuffer;
   }
 };
 

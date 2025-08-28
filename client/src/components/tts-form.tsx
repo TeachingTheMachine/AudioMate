@@ -13,6 +13,7 @@ import type { TtsTest, InsertTtsTest } from "@shared/schema";
 
 const API_PROVIDERS = [
   { value: "openai", label: "OpenAI TTS" },
+  { value: "elevenlabs", label: "ElevenLabs" },
 ];
 
 const VOICE_OPTIONS = [
