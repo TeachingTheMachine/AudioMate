@@ -16,14 +16,24 @@ const API_PROVIDERS = [
   { value: "elevenlabs", label: "ElevenLabs" },
 ];
 
-const VOICE_OPTIONS = [
-  { value: "alloy", label: "Alloy" },
-  { value: "echo", label: "Echo" },
-  { value: "fable", label: "Fable" },
-  { value: "onyx", label: "Onyx" },
-  { value: "nova", label: "Nova" },
-  { value: "shimmer", label: "Shimmer" },
-];
+const VOICE_OPTIONS = {
+  openai: [
+    { value: "alloy", label: "Alloy" },
+    { value: "echo", label: "Echo" },
+    { value: "fable", label: "Fable" },
+    { value: "onyx", label: "Onyx" },
+    { value: "nova", label: "Nova" },
+    { value: "shimmer", label: "Shimmer" },
+  ],
+  elevenlabs: [
+    { value: "21m00Tcm4TlvDq8ikWAM", label: "Rachel" },
+    { value: "AZnzlk1XvdvUeBnXmlld", label: "Domi" },
+    { value: "EXAVITQu4vr4xnSDxMaL", label: "Bella" },
+    { value: "ErXwobaYiN019PkySvjV", label: "Antoni" },
+    { value: "MF3mGyEYCl7XYWbV9V6O", label: "Elli" },
+    { value: "TxGEqnHWrfWFTfGW9XjX", label: "Josh" },
+  ],
+};
 
 const SPEED_OPTIONS = [
   { value: "0.75", label: "Slow (0.75x)" },
@@ -38,6 +48,11 @@ export function TtsForm() {
   const [speed, setSpeed] = useState("1.0");
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [currentTest, setCurrentTest] = useState<TtsTest | null>(null);
+  
+  // Get voice options based on selected API provider
+  const currentVoiceOptions = apiProvider && VOICE_OPTIONS[apiProvider as keyof typeof VOICE_OPTIONS] 
+    ? VOICE_OPTIONS[apiProvider as keyof typeof VOICE_OPTIONS]
+    : VOICE_OPTIONS.openai;
   
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -107,7 +122,11 @@ export function TtsForm() {
       const testData: InsertTtsTest = {
         text: text.trim(),
         apiProvider,
-        voiceSettings: {
+        voiceSettings: apiProvider === "elevenlabs" ? {
+          voiceId: voice,
+          stability: 0.5,
+          similarity_boost: 0.5,
+        } : {
           voice,
           speed: parseFloat(speed),
         },
@@ -179,7 +198,12 @@ export function TtsForm() {
               <Settings className="inline w-4 h-4 text-gray-400 mr-2" />
               TTS API Provider
             </label>
-            <Select value={apiProvider} onValueChange={setApiProvider}>
+            <Select value={apiProvider} onValueChange={(value) => {
+              setApiProvider(value);
+              // Reset voice to first option when changing API provider
+              const newVoiceOptions = VOICE_OPTIONS[value as keyof typeof VOICE_OPTIONS] || VOICE_OPTIONS.openai;
+              setVoice(newVoiceOptions[0].value);
+            }}>
               <SelectTrigger data-testid="select-api" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200">
                 <SelectValue placeholder="OpenAI TTS" />
               </SelectTrigger>
@@ -222,7 +246,7 @@ export function TtsForm() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {VOICE_OPTIONS.map((option) => (
+                        {currentVoiceOptions.map((option) => (
                           <SelectItem key={option.value} value={option.value}>
                             {option.label}
                           </SelectItem>
