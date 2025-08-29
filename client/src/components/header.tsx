@@ -15,7 +15,7 @@ export function Header() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-foreground bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              TTS API Testing Tool
+              AudioMate - TTS API Testing Tool
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
               Test and compare different Text-to-Speech APIs with high-quality audio generation

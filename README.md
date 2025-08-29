@@ -1,6 +1,6 @@
-# TTS API Testing Tool 🎙️
+# AudioMate - TTS API Testing Tool 🎙️
 
-**TTS API Testing Tool** is a professional text-to-speech API comparison platform that allows developers and content creators to test, compare, and evaluate different TTS providers with real-time audio generation and comprehensive testing capabilities.
+**TTS API Testing Tool** is a text-to-speech API comparison platform that allows developers and content creators to test, compare, and evaluate different TTS providers with real-time audio generation and comprehensive testing capabilities.
 
 ## What It Solves 📝
 
@@ -8,7 +8,7 @@ Choosing the right text-to-speech API for a project requires extensive testing a
 
 ## How It Works 🤝
 
-The system uses a streamlined, professional workflow:
+The system uses a streamlined, workflow:
 - **Smart Text Input**: Enter any text content with real-time character counting and validation
 - **Provider Selection**: Choose between leading TTS APIs (OpenAI, ElevenLabs) with dynamic voice options
 - **Voice Customization**: Select from provider-specific voices with speed and quality controls
@@ -22,7 +22,7 @@ Built with **React TypeScript** for the modern frontend experience, **Express.js
 
 ## Architecture 🏗️
 
-TTS API Testing Tool is built on a clean, scalable architecture designed for professional API testing and comparison workflows.
+AudioMate TTS API Testing Tool is built on a clean, scalable architecture designed for API testing and comparison workflows.
 
 ### Core Components
 
@@ -40,7 +40,7 @@ TTS API Testing Tool is built on a clean, scalable architecture designed for pro
 
 **TTS Provider Integration**
 - **OpenAI TTS Client**: Full integration with OpenAI's TTS-1 model supporting all voice options and speeds
-- **ElevenLabs Client**: Professional integration with voice ID mapping and quality settings
+- **ElevenLabs Client**: Integration with voice ID mapping and quality settings
 - **Error Handling**: Robust API error management with detailed logging and user feedback
 - **Performance Tracking**: Request counting, response time monitoring, and usage analytics
 
@@ -119,7 +119,7 @@ The system supports multiple leading TTS providers with comprehensive voice opti
 - **Performance Monitoring**: Request tracking, response time analysis, and usage analytics
 
 **Development Opportunities**
-TTS API Testing Tool represents an excellent foundation for community contributions. Key areas where the project could benefit from developer involvement:
+AudioMate TTS API Testing Tool represents an excellent foundation for community contributions. Key areas where the project could benefit from developer involvement:
 
 - **Additional Providers**: Integration with Azure Cognitive Services, Google Cloud TTS, AWS Polly
 - **Batch Testing**: Support for testing multiple text samples simultaneously across providers
@@ -160,7 +160,7 @@ TTS API Testing Tool represents an excellent foundation for community contributi
 - **Quality Assurance**: Systematic testing of TTS implementations across different providers
 - **Benchmark Creation**: Establish performance baselines for TTS provider comparison
 
-TTS API Testing Tool bridges the gap between complex TTS provider evaluation and accessible, streamlined testing workflows. The platform provides professional-grade testing capabilities while maintaining ease of use for both developers and content creators.
+AudioMate TTS API Testing Tool bridges the gap between complex TTS provider evaluation and accessible, streamlined testing workflows. The platform provides professional-grade testing capabilities while maintaining ease of use for both developers and content creators.
 
 ---
 
