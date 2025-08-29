@@ -1,4 +1,4 @@
-# AudioMate - TTS API Testing Tool 🎙️
+# AudioMate - TTS API Testing Tool 🎙️ 
 
 **TTS API Testing Tool** is a text-to-speech API comparison platform that allows developers and content creators to test, compare, and evaluate different TTS providers with real-time audio generation and comprehensive testing capabilities.
 
@@ -129,6 +129,9 @@ AudioMate TTS API Testing Tool represents an excellent foundation for community 
 - **Export Capabilities**: Bulk export of test results and audio files with comprehensive reporting
 
 ## Getting Started 🚀
+
+**Demo Video**
+📹 [Watch Demo Video](./client/src/assets/videoDemo.mp4) - See AudioMate in action with a complete walkthrough of features and capabilities
 
 **Simple Three-Step Process**
 1. **Input**: Enter your text content and select a TTS provider
