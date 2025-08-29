@@ -165,8 +165,8 @@ export function TtsForm() {
       {/* Main Form */}
       <Card className="bg-card/95 backdrop-blur-sm rounded-xl shadow-lg border border-border">
         <CardHeader className="px-6 py-4 bg-secondary/30 border-b border-border">
-          <CardTitle className="text-lg font-semibold text-foreground">Configure TTS Test</CardTitle>
-          <p className="text-sm text-muted-foreground mt-1">Enter your text and select an API provider to generate speech</p>
+          <CardTitle className="text-lg font-semibold text-foreground">Configure TTS Test
+          <span className="text-sm text-muted-foreground mt-1"> - Enter your text and select an API provider to generate speech</span></CardTitle>
         </CardHeader>
         
         <CardContent className="p-6 space-y-6">

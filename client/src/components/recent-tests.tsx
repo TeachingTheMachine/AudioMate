@@ -49,9 +49,9 @@ export function RecentTests() {
     return (
       <Card className="bg-white rounded-xl shadow-lg border border-gray-200 mt-6">
         <CardHeader className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-          <CardTitle className="text-lg font-semibold text-gray-900">Recent Tests</CardTitle>
-          <p className="text-sm text-gray-600 mt-1">Your recent TTS generations</p>
-        </CardHeader>
+          <CardTitle className="text-lg font-semibold text-gray-900">Recent Tests
+          <span className="text-sm text-gray-600 mt-1"> - Your recent TTS generations</span>
+          </CardTitle></CardHeader>
         <CardContent className="p-6 text-center text-gray-500">
           Loading recent tests...
         </CardContent>
@@ -64,8 +64,9 @@ export function RecentTests() {
   return (
     <Card className="bg-card/95 backdrop-blur-sm rounded-xl shadow-lg border border-border mt-6">
       <CardHeader className="px-6 py-4 bg-secondary/30 border-b border-border">
-        <CardTitle className="text-lg font-semibold text-foreground">Recent Tests</CardTitle>
-        <p className="text-sm text-muted-foreground mt-1">Your recent TTS generations</p>
+        <CardTitle className="text-lg font-semibold text-foreground">
+          Recent Tests <span className="text-sm font-normal text-muted-foreground"> - Your recent TTS generations</span>
+        </CardTitle>
       </CardHeader>
       
       <div className="divide-y divide-gray-200">
